@@ -1,58 +1,72 @@
 import React, { useState, useEffect } from 'react'
 
 const App = () => {
-    const [date, setDate] = useState(new Date().toLocaleTimeString())
+    const [counter1, setCounter1] = useState(0)
+    const [counter2, setCounter2] = useState(0)
+
+    const handleCounter1 = () => setCounter1(counter1 + 1)
+    const handleCounter2 = () => setCounter2(counter2 + 1)
 
     useEffect(() => {
-        //componentDidMount
-        console.log('MOUNTED')
-        //componentDidUpdate
-        const time = setInterval(() => setDate(new Date().toLocaleTimeString()), 1000)
-        //componentWillUnmount
-        return () => {
-            clearInterval(time)
-        }
-    })
+        console.log('USE EFFECT')
+    }, [counter1, counter2]);
 
     return (
-        <h1>{date}</h1>
+        <>
+            <h2>Counter 1: {counter1}</h2>
+            <h2>Counter 2: {counter2}</h2>
+            <button onClick={handleCounter1}>Counter 1</button>
+            <button onClick={handleCounter2}>Counter 2</button>
+        </>
     );
 }
 
 
 export default App;
 
-
 /*
-useEffect
-
-Es el segundo hook mas usado en React.
-Se usa para emular el ciclo de vida que teniamos en las clases (component­Did­Mount, component­Did­Update y component­Will­Unmount)
-Es una funcion.
+Control de ejecución de useEffect
 
 
 1. Debemos importarlo como cualquier dependencia, componente o funcion para utilizarlo.
 
+import React, { useState, useEffect } from 'react'
 
-2. Reemplazando a "componentDidUpdate"
-Utilizamos la funcion 'setDate' que tenemos para asignar/actualizar el estado de 'date'.
-Creamos un 'setInterval' para poder actualizar el estado cada 'x' periodo de tiempo.
-Usando una arrow function le pasamos el 'setDate' y utilizamos dos paramentros (primero el método 'new Date().toLocaleTimeString()' y segundo el intervalo).
+2. Al cargar la pagina 'useEffect' se dispara una vez porque el componente se ha montado.
+Al clickear en 'contador 1' o 'contador 2' como el estado cambia 'useEffect' vuelve a ejecutarse.
+
+useEffect( () => {
+    console.log('USE EFFECT')
+});
+
+Va a haber ocasiones en las que no queremos que si se hace un re-render 'useEffect' se vuelva a ejecutar.
+Es decir vamos a querer que se ejecute solo una vez al montarse.
+Para ello tenemos lo que se denomina 'control de dependencias'.  
+
+Se indica despues de las {}, ponemos una coma (,) y aca es donde escribimos la lista de dependencias que tiene que estar vigilando 'useEffect'.
+Recibe un array.
+
+Si dejamos un array vacio [] se ejecuta al montarse el componente pero si cambio los contadores 'useEffect' no vuelve a ejecutarse.
+Es decir que poniendo un array vacio controlamos que solo se ejecute el 'componentDidMount()'.
+No el 'componentDidUpdate()'
+Solo el montaje del componente.
+
+useEffect( () => {
+    console.log('USE EFFECT')
+},[]);
+
+Si necesitamos vigilar alguna dependencia, es decir que si algo cambia se vuelva a ejecutar, eso va dentro de los corchetes [] como dependencia.
+
+useEffect(() => {
+    console.log('USE EFFECT')
+}, [counter1, counter2]);
+
+De esta forma estara vigilando las funciones que le pase dentro de los corchetes, si esta vigilada al pulsarla se volvera a ejecutar 'useEffect'; sino no.
+Lo que NO este dentro de los cortchetes no esta vigilado y al clickearlo no ejecutara 'useEffects'.
 
 
-3. Reemplazando a "componentWillUnmount"
-
-En el punto anterior estamos creando un intervalo cada vez que montamos el componente; naturalmente esto es incorrecto y va a traer errores. 
-Para evitar que eso pase tenemos que desmontar el componente e indicar que limpie el intervalo.
-
-La emulacion del "componentWillUnmount" viene a traves de un 'return' y lo que devolvemos es una funcion.
-Dentro de esta funcion vamos a indicar lo que queremos que pase cuando el componente se desmonte. 
-
-
-return () => {
-    clearInterval(time)
-}
-
+Esto es importante para controlar las peticiones HTTP.
+Es fundamental controlar el orden de ejecucion de 'useEffect' para no hacer peticiones infinitas.
 
 
 */
