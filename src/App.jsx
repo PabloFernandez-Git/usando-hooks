@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
-const App = () => {
+const App = ({ initialNumber = 23 }) => {
 
     // state = { number: 10 }
     // const state = useState(0)
     // const number = state[0]
     // [state, ()setState]
-    const [number, setNumber] = useState(10)
+    const [number = initialNumber, setNumber] = useState(10)
 
 
     const handleIncrement = () => {
@@ -50,55 +50,24 @@ export default App;
 
 
 /*
-useState
-
-1. No utilizamos clases; las reemplazamos por una funcion.
-
-const App = () => {}
+defaultProps
 
 
-2. Tenemos que utilizar el hook de estado, ese hook se llama 'useState'. 
-Todos los hooks comienzan con la palabra 'use' seguido de su funcion.
-'useState' nos permite utilizar un estado dentro de funciones.
+Podemos pasar a nuestra funcion como prop un valor desde el index.js :
 
-import React, { useState } from 'react'
+ReactDOM.render(<App initialNumber={100} />, document.getElementById('root'));
 
 
-3. Para declarar un estado :
+Podemos dar a nuestra funcion un estado inicial por si la prop no llega:
 
-const [number, setNumber] = useState(10)
-
-Esto devuelve un array con dos posiciones.
-Tendriamos un array con el estado y una funcion que equivaldria al setState.
-Esto es lo que tendriamos en el array que devuelve el utilizar la funcion useState(10).
-La forma mas normal de declarar un estado es destructurando esto:
-
-[state, ()setState]
-
-Por lo tanto lo que se suele hacer es destructurar el array de la siguiente manera: 
-
-const [number, setNumber] = useState(10)
-const [nombre de nuestro estado, funcion que nos va a servir para actualizar ese numero] = useState(10)
-
-En number tenemos guardado el numero '10' que es el estado por defecto.
-
-( De esta forma se declaraba con clases => state = { number: 10 } )
-
-
-4. Al no ser una clase no necesitamos la funcion render().
-El 'return' si es necesario!
-
-
-5. Las funciones deben estar declaradas usando una constante ('const')
-
-6. Los manejadores (handleIncrement) no necesitan el 'this' (ya que no usamos clases)
-
-7. Para actualizar el estado tenemos la funcion 'setNumber' que creamos previamente.
-Como parametro simplemente le tenemos que decir lo que tiene que hacer.
-
-const handleIncrement = () => {
-    setNumber(number + 1)
+const App = ({ initialNumber = 23 }) => {
+    const [number = initialNumber, setNumber] = useState(10)
 }
+
+Si el useState no tuviera un valor, tomaria primero el valor que llega de 'initialNumber' (viene como prop desde index.js) pero si esta prop no llega toma el valor de '23' que es el valor que le damos dentro de la funcion.
+
+Con esto lo que estamos haciendo es decirle, si te llega la prop 'initialNumer' le asignas ese valor, y sino por defecto le asigna el valor de '23' que es el que esta en la funcion.
+
 
 
 */
