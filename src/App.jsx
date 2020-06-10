@@ -1,72 +1,52 @@
 import React, { useState, useEffect } from 'react'
 
 const App = () => {
-    const [counter1, setCounter1] = useState(0)
-    const [counter2, setCounter2] = useState(0)
+  const [posts, setPosts] = useState([])
 
-    const handleCounter1 = () => setCounter1(counter1 + 1)
-    const handleCounter2 = () => setCounter2(counter2 + 1)
+  useEffect(() => {
+    const getPosts = async () => {
+      const res = await fetch('https://jsonplaceholder.typicode.com/users')
+      const data = await res.json()
+      setPosts(data)
+    }
 
-    useEffect(() => {
-        console.log('USE EFFECT')
-    }, [counter1, counter2]);
+    getPosts()
+  }, []);
 
-    return (
-        <>
-            <h2>Counter 1: {counter1}</h2>
-            <h2>Counter 2: {counter2}</h2>
-            <button onClick={handleCounter1}>Counter 1</button>
-            <button onClick={handleCounter2}>Counter 2</button>
-        </>
-    );
+  return (
+    <>
+      <p>{JSON.stringify(posts)}</p>
+    </>
+  );
 }
 
 
 export default App;
 
 /*
-Control de ejecución de useEffect
+Peticiones HTTP
 
+Como realizar peticiones a una API de forma segura utilizando 'useEffect' ?
+(usaremos JSONPlaceholder como ejemplo)
 
-1. Debemos importarlo como cualquier dependencia, componente o funcion para utilizarlo.
+1. La forma mas simple de hacerlo es utilizar 'async await' 
 
-import React, { useState, useEffect } from 'react'
+Una vez que tenemos en 'data' la informacion que queremos, usamos 'setPosts' y le pasamos esa informacion.
 
-2. Al cargar la pagina 'useEffect' se dispara una vez porque el componente se ha montado.
-Al clickear en 'contador 1' o 'contador 2' como el estado cambia 'useEffect' vuelve a ejecutarse.
+Para utilizar 'await' siempre debemos hacerlo dentro de una funcion asincrona.
 
-useEffect( () => {
-    console.log('USE EFFECT')
-});
+No podemos modificar el comportamiento de 'useEffect' por naturaleza.
+La forma de hacerlo es crear dentro de 'useEffect' una funcion utilizando 'const' y esto sera igual a una funcion asincrona.
+Dentro de esta es donde construimos nuestra peticion.
 
-Va a haber ocasiones en las que no queremos que si se hace un re-render 'useEffect' se vuelva a ejecutar.
-Es decir vamos a querer que se ejecute solo una vez al montarse.
-Para ello tenemos lo que se denomina 'control de dependencias'.  
+Una vez contruida para que se ejecute debemos llamarla.
 
-Se indica despues de las {}, ponemos una coma (,) y aca es donde escribimos la lista de dependencias que tiene que estar vigilando 'useEffect'.
-Recibe un array.
+De esta forma nos llegara toda al informacion que requerimos, pero esto presentara un error de red, ya que realizara pedidos en forma infinita.
 
-Si dejamos un array vacio [] se ejecuta al montarse el componente pero si cambio los contadores 'useEffect' no vuelve a ejecutarse.
-Es decir que poniendo un array vacio controlamos que solo se ejecute el 'componentDidMount()'.
-No el 'componentDidUpdate()'
-Solo el montaje del componente.
+Para solucionar esto tenemos que sumarle (a nuestro 'useEffect') un array vacio (sin dependencias) para que haga una unica peticion.
 
-useEffect( () => {
-    console.log('USE EFFECT')
-},[]);
+De esta forma solo se ejecutara cuando monte el componente, no cuando se actualice.
 
-Si necesitamos vigilar alguna dependencia, es decir que si algo cambia se vuelva a ejecutar, eso va dentro de los corchetes [] como dependencia.
-
-useEffect(() => {
-    console.log('USE EFFECT')
-}, [counter1, counter2]);
-
-De esta forma estara vigilando las funciones que le pase dentro de los corchetes, si esta vigilada al pulsarla se volvera a ejecutar 'useEffect'; sino no.
-Lo que NO este dentro de los cortchetes no esta vigilado y al clickearlo no ejecutara 'useEffects'.
-
-
-Esto es importante para controlar las peticiones HTTP.
-Es fundamental controlar el orden de ejecucion de 'useEffect' para no hacer peticiones infinitas.
 
 
 */
