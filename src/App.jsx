@@ -39,7 +39,7 @@ export default App;
 
 
 /*
-Ejercicio con HTTP, useEffect y useEffect
+Ejercicio con HTTP, useState y useEffect
 
 - Pedir un post a 'JSONPlaceholder' y utilizando dos botones cambiar el numero de post que queremos ver.
 
