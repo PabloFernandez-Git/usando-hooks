@@ -1,51 +1,66 @@
 import React, { useState, useEffect } from 'react'
 
 const App = () => {
-  const [posts, setPosts] = useState([])
+    const [post, setPost] = useState([])
+    const [id, setId] = useState(1)
 
-  useEffect(() => {
-    const getPosts = async () => {
-      const res = await fetch('https://jsonplaceholder.typicode.com/users')
-      const data = await res.json()
-      setPosts(data)
+    useEffect(() => {
+        const getPosts = async () => {
+            const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
+            const data = await res.json()
+            setPost(data)
+        }
+
+        getPosts()
+    }, [id]);
+
+    const handlePrevId = () => {
+        if (id > 1) setId(id - 1)
     }
 
-    getPosts()
-  }, []);
+    const handleNextId = () => {
+        setId(id + 1)
+    }
 
-  return (
-    <>
-      <p>{JSON.stringify(posts)}</p>
-    </>
-  );
+    return (
+        <>
+            {/* <p>{JSON.stringify(post)}</p> */}
+            <h1>{post.title}</h1>
+            <p>{post.body}</p>
+            <button onClick={handlePrevId}>Prev ID</button>
+            <button onClick={handleNextId}>Next ID</button>
+            <p>{id}</p>
+        </>
+    );
 }
 
 
 export default App;
 
+
 /*
-Peticiones HTTP
+Ejercicio con HTTP, useEffect y useEffect
 
-Como realizar peticiones a una API de forma segura utilizando 'useEffect' ?
-(usaremos JSONPlaceholder como ejemplo)
+- Pedir un post a 'JSONPlaceholder' y utilizando dos botones cambiar el numero de post que queremos ver.
 
-1. La forma mas simple de hacerlo es utilizar 'async await' 
+1. Creamos un estado que guarde el 'id'
+Al no existir el id '0' iniciamos el state en '1'
 
-Una vez que tenemos en 'data' la informacion que queremos, usamos 'setPosts' y le pasamos esa informacion.
+2. Pedimos el post utilizando 'async await' e interpolamos el 'id' usando template strings.
 
-Para utilizar 'await' siempre debemos hacerlo dentro de una funcion asincrona.
+3. Creamos los dos botones (prev y next) y les pasamos el evento 'onClick' con un 'handle' para manejar el evento.
 
-No podemos modificar el comportamiento de 'useEffect' por naturaleza.
-La forma de hacerlo es crear dentro de 'useEffect' una funcion utilizando 'const' y esto sera igual a una funcion asincrona.
-Dentro de esta es donde construimos nuestra peticion.
+4. Creamos los 'handle' indicando el comportamiento segun corresponda.
 
-Una vez contruida para que se ejecute debemos llamarla.
+5. useEffect solo se esta ejecutando cuando carga la pagina (cuando se monta el componente).
+Tenemos que decirle que se vuelva a ejecutar cuando cambie el 'id'.
+Para solucionar esto debemos pasarle esa dependencia a 'useEfect' entre corchetes [id].
+De esta forma vigilara 'id' y volvera a cargar la pagina cada vez que cambie.
 
-De esta forma nos llegara toda al informacion que requerimos, pero esto presentara un error de red, ya que realizara pedidos en forma infinita.
+6. Para corregir el problema de no usar un 'id' menor a 1 tenemos que usar una condicion en nuestro 'handlePrevId'
 
-Para solucionar esto tenemos que sumarle (a nuestro 'useEffect') un array vacio (sin dependencias) para que haga una unica peticion.
 
-De esta forma solo se ejecutara cuando monte el componente, no cuando se actualice.
+
 
 
 
