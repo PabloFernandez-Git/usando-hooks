@@ -6,7 +6,7 @@ import {useHttp} from './hooks/useHttp'
 const App = () => {
 
     const [id, setId] = useState(1)
-    const [post, setPost] = useHttp(`https://jsonplaceholder.typicode.com/posts/${id}`)
+    const [post, isLoading] = useHttp(`https://jsonplaceholder.typicode.com/posts/${id}`)
 
     
     const handlePrevId = () => {
@@ -22,13 +22,12 @@ const App = () => {
             {/* <p>{JSON.stringify(post)}</p> */}
             <h1>{post.title}</h1>
             <p>{post.body}</p>
-            <button onClick={handlePrevId}>Prev ID</button>
-            <button onClick={handleNextId}>Next ID</button>
+            <button disabled={isLoading} onClick={handlePrevId}>Prev ID</button>
+            <button disabled={isLoading} onClick={handleNextId}>Next ID</button>
+            {isLoading && <h2>Loading...</h2>}
             <p>{id}</p>
         </>
     );
 }
 
-
 export default App;
-
